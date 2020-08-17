@@ -20,8 +20,11 @@ const renderProducts = (list) => {
   });
   // console.log(productList);
 
-    let [a, b, c, d] = productList
-    document.querySelector('.products').innerHTML = a + b + c + d;
+    let str = ''
+    for (let i in productList){
+      str += productList[i]
+    }
+    document.querySelector('.products').innerHTML = str;
     // Пробовал через цикл вытащить каждое значене элемента массива, но
     // через querySelector('.products').innerHTML так сделать не получилось,
     // выводился только последний элемент. Курс JS-1 мне, почему-то, не открылся,
