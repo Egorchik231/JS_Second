@@ -1,37 +1,99 @@
-const products = [
-  {id: 1, title: 'Notebook', price: 20000},
-  {id: 2, title: 'Mouse', price: 1500},
-  {id: 3, title: 'Keyboard', price: 5000},
-  {id: 4, title: 'Gamepad', price: 4500},
-];
+class ProductList {
+  #privateProp;
 
-const renderProduct = (title, price, img = 'http://placehold.it/300x50') => {
-  return `<div class="product-item">
-            <h3>${title}</h3>
-            <p>${price}</p>
-            <img src=${img}></img>
-            <button class="by-btn">Добавить в корзину</button>
-          </div>`;
-};
+  constructor(container = '.products') {
+    this.container = container;
+    this.goods = [];
+    this.allProducts = [];
+    this.#privateProp = '123';
+    this.#fetchProducts();
+    this.render();
+  }
 
-const renderProducts = (list) => {
-  const productList = list.map((product) => {
-      return renderProduct(product.title, product.price);
-  });
-  // console.log(productList);
 
-    let str = ''
-    for (let i in productList){
-      str += productList[i]
+  #fetchProducts() {
+    this.goods = [
+      {id: 1, title: 'Notebook', price: 20000},
+      {id: 2, title: 'Mouse', price: 1500},
+      {id: 3, title: 'Keyboard', price: 5000},
+      {id: 4, title: 'Gamepad', price: 4500},
+    ];
+  }
+
+  render() {
+    const block = document.querySelector(this.container);
+
+    for (let product of this.goods) {
+      const productObject = new ProductItem(product);
+
+      this.allProducts.push(productObject);
+      block.insertAdjacentHTML('beforeend', productObject.render());
     }
-    document.querySelector('.products').innerHTML = str;
-    // Пробовал через цикл вытащить каждое значене элемента массива, но
-    // через querySelector('.products').innerHTML так сделать не получилось,
-    // выводился только последний элемент. Курс JS-1 мне, почему-то, не открылся,
-    // поэтому я начал сразу с продвинутого левела, буду стараться нагонять))
-    // Преподаватель вы просто супер! Безумно интересно и приятно вас слушать! Спасибо!
+  }
+
+  //HOMEWORK TASK
+  costOfGoods() {
+    let totalPrice = 0
+    for (let product of this.allProducts) {
+      totalPrice += product.price
+    }
+    return totalPrice
+  }
+
+}
+
+class ProductItem {
+  constructor(product, img = 'https://placehold.it/200x150') {
+    this.title = product.title;
+    this.price = product.price;
+    this.id = product.id;
+    this.img = img;
+  }
+
+  render() {
+    return `<div class="product-item" data-id="${this.id}">
+              <img src="${this.img}" alt="Some img">
+              <div class="desc">
+                  <h3>${this.title}</h3>
+                  <p>${this.price} \u20bd</p>
+                  <button class="buy-btn">Купить</button>
+              </div>
+          </div>`;
+  }
+}
+
+class Cart {
+  constructor(container = '.products') {
+    this.container = container;
+    this.goods = [];
+  }
+
+  putProduct(){
+
+  }
+
+  render(){
+
+  }
+
 
 
 }
 
-renderProducts(products);
+class ItemInCart {
+  constructor(product, img = 'https://placehold.it/200x150') {
+    this.title = product.title;
+    this.price = product.price;
+    this.id = product.id;
+    this.img = img;
+
+  }
+
+  render (){
+
+  }
+}
+
+
+const list = new ProductList();
+console.log(list.costOfGoods())
