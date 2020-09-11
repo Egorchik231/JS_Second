@@ -3,25 +3,36 @@ const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-a
 const app = new Vue({
   el: '#app',
   data: {
-    search_str: '',
+    goodsincart: [],
     filtered: [],
-    cart_block: 'cart-block invisible',
     catalogUrl: '/catalogData.json',
     products: [],
-    goodsInCart: [],
     imgCatalog: 'https://placehold.it/200x150',
   },
   methods: {
-    getJson(url){
+    filter(search_str){
+      let regexp = new RegExp(search_str, 'i')
+      this.filtered = this.products.filter(el => regexp.test(el.product_name))
+    },
+    getJson(url) {
       return fetch(url)
-        .then(result => result.json())
-        .catch(error => {
-          console.log(error);
-        })
+          .then(result => result.json())
+          .catch(error => {
+            console.log(error);
+          })
+    },
+    created() {
+      this.getJson(`${API + this.catalogUrl}`)
+          .then(data => {
+            for (let el of data) {
+              this.products.push(el);
+              this.filtered.push(el);
+            }
+          });
     },
     addProduct(product){
       let productID = product.id_product
-      let find = this.goodsInCart.find(product => product.id_product === productID)
+      let find = this.goodsincart.find(product => product.id_product === productID)
       if (find){
         find.quantity++
       }
@@ -33,31 +44,15 @@ const app = new Vue({
           product_name: product.name,
           quantity: 1
         };
-        this.goodsInCart.push(Item)
-        this.goodss = [Item]
+        this.goodsincart.push(Item)
       }
-    },
-    removeFromCart(product){
-      if (product.quantity > 1){
-        product.quantity--
-      }
-      else{
-        this.goodsInCart.splice(this.goodsInCart.indexOf(product), 1);
-      }
-
-    },
-    filter(){
-      let regexp = new RegExp(this.search_str, 'i')
-      this.filtered = this.products.filter(el => regexp.test(el.product_name))
     }
+
   },
-  created(){
-    this.getJson(`${API + this.catalogUrl}`)
-      .then(data => {
-        for(let el of data){
-          this.products.push(el);
-          this.filtered.push(el);
-        }
-      });
+
+  mounted(){
+    this.created()
+    console.log(this.products)
+    console.log(this.filtered)
   }
 });
